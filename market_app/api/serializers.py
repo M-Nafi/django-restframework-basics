@@ -10,3 +10,11 @@ class MarketSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Market.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.location = validated_data.get('location', instance.location)
+        instance.description = validated_data.get('description', instance.description)
+        instance.net_worth = validated_data.get('net_worth', instance.net_worth)
+        instance.save()
+        return instance
