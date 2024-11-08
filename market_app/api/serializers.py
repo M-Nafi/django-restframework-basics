@@ -53,7 +53,7 @@ class SellerCreateSerializer(serializers.Serializer):
 
     def validate_markets(self, value):
         markets = Market.objects.filter(id__in=value)
-        if(markets) !=len(value):
+        if len(markets) !=len(value):
             raise serializers.ValidationError("some or more Marketids not found!")
         return value
     
