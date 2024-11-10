@@ -9,35 +9,48 @@ class MarketSerializer(serializers.ModelSerializer):
 
     def validate_name(self, value):
         errors = []
-        
+
         if 'X' in value:
             errors.append('no X in location')
         if 'Y' in value:
-            errors.append('no Y in location')    
+            errors.append('no Y in location')
         if errors:
-            raise serializers.ValidationError(errors)      
-        
+            raise serializers.ValidationError(errors)
+
         return value
-    
-      # diese funktion ist wichtig und kann bei join verwendet werden, wenn 
-    # man nicht möchte, dass etwas bestimmtes eingegeben werden soll. 
-    #  
-    # def validate_location(self, value):
-    #     if 'X' in value:
-    #         raise serializers.ValidationError('das X gehört da nicht rein!')
-    #     return value
 
-class SellerDetailSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=255)
-    contact_info = serializers.CharField()
+
+class SellerSerializer(serializers.ModelSerializer):
     markets = MarketSerializer(many=True, read_only=True)
+    market_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Market.objects.all(),
+        many=True,
+        write_only=True,
+        source='markets'
+    )
+
+    class Meta:
+        model = Seller
+        exclude = []
 
 
-class SellerCreateSerializer(serializers.ModelSerializer):
-     class Meta:
+# alte funktion sellerdetailsserializer!
+# class SellerDetailSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     name = serializers.CharField(max_length=255)
+#     contact_info = serializers.CharField()
+#     markets = MarketSerializer(many=True, read_only=True)
+
+class SellerDetailSerializer(serializers.ModelSerializer):
+    class Meta:
         model = Seller
         fields = '__all__'
+
+
+# class SellerCreateSerializer(serializers.ModelSerializer):
+#      class Meta:
+#         model = Seller
+#         fields = '__all__'
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
