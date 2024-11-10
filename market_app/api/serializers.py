@@ -46,12 +46,6 @@ class SellerDetailSerializer(serializers.ModelSerializer):
         model = Seller
         fields = '__all__'
 
-
-# class SellerCreateSerializer(serializers.ModelSerializer):
-#      class Meta:
-#         model = Seller
-#         fields = '__all__'
-
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
