@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import MarketSerializer, ProductDetailSerializer, SellerSerializer
+from .serializers import MarketSerializer, ProductDetailSerializer, SellerSerializer, MarketHyperlinkedSerializer
 from market_app.models import Market, Seller, Product
 
 @api_view(['GET', 'POST'])
@@ -9,7 +9,7 @@ def markets_view(request):
 
     if request.method == 'GET':
         markets = Market.objects.all()
-        serializer = MarketSerializer(markets, many=True, context={'request': request})
+        serializer = MarketHyperlinkedSerializer(markets, many=True, context={'request': request})
         return Response(serializer.data)    
     
     if request.method == 'POST':
@@ -27,7 +27,7 @@ def market_single_view(request, pk):
 
     if request.method == 'GET':
         market = Market.objects.get(pk=pk)
-        serializer = MarketSerializer(market)
+        serializer = MarketSerializer(market, context={'request': request})
         return Response(serializer.data)   
     
     
