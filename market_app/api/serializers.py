@@ -2,6 +2,12 @@ from rest_framework import serializers
 from market_app.models import Market, Seller, Product
 
 
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+ 
 class MarketSerializer(serializers.ModelSerializer):
 
     sellers = serializers.StringRelatedField(many=True, read_only=True)
@@ -25,7 +31,6 @@ class MarketSerializer(serializers.ModelSerializer):
 
 
 class MarketHyperlinkedSerializer(MarketSerializer, serializers.HyperlinkedModelSerializer):
-
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -61,6 +66,12 @@ class SellerSerializer(serializers.ModelSerializer):
 
     def get_market_count(self, obj):
         return obj.markets.count()
+
+ 
+class SellerListSerializer(SellerSerializer, serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Seller
+        fields = ["url", "name", "market_ids", "market_count", "contact_info"]
 
 
 # alte funktion sellerdetailsserializer!

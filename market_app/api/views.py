@@ -1,28 +1,53 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import MarketSerializer, ProductDetailSerializer, SellerSerializer, MarketHyperlinkedSerializer
+from django.shortcuts import get_object_or_404
+
+from .serializers import MarketSerializer, ProductSerializer, ProductDetailSerializer, SellerListSerializer, SellerSerializer, MarketHyperlinkedSerializer
 from market_app.models import Market, Seller, Product
+
 from rest_framework.views import APIView
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework import viewsets
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 class MarketsView (generics.ListCreateAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
-       
+
+
 class MarketDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Market.objects.all()
     serializer_class = MarketSerializer
 
-class SellerOfMarketList(generics.ListAPIView):
-    serializer_class = SellerSerializer
+
+class SellerOfMarketList(generics.ListCreateAPIView):
+    serializer_class = SellerListSerializer
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         market = Market.objects.get(pk = pk)
         return market.sellers.all()
+    
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        market = Market.objects.get(pk = pk)
+        serializer.save(markets=[market])
+
+
+
+
+
+
+
+
+
 
 
 @api_view(['GET', 'POST'])
