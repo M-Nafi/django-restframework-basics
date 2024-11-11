@@ -41,54 +41,58 @@ class SellerOfMarketList(generics.ListCreateAPIView):
         serializer.save(markets=[market])
 
 
+class SellerView(generics.ListCreateAPIView):
+    queryset = Seller.objects.all()
+    serializer_class = SellerSerializer
+
+class SellerDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Seller.objects.all()
+    serializer_class = SellerSerializer
 
 
 
 
 
 
+# @api_view(['GET', 'POST'])
+# def sellers_view(request):
 
-
-
-@api_view(['GET', 'POST'])
-def sellers_view(request):
-
-    if request.method == 'GET':
-        sellers = Seller.objects.all()
-        serializer = SellerSerializer(sellers, many=True, context={'request': request})
-        return Response(serializer.data)    
+#     if request.method == 'GET':
+#         sellers = Seller.objects.all()
+#         serializer = SellerSerializer(sellers, many=True, context={'request': request})
+#         return Response(serializer.data)    
     
-    if request.method == 'POST':
-       serializer = SellerSerializer(data=request.data)
-       if serializer.is_valid():
-           serializer.save()
-           return Response(serializer.data)
-       else:
-           return Response(serializer.errors)
+#     if request.method == 'POST':
+#        serializer = SellerSerializer(data=request.data)
+#        if serializer.is_valid():
+#            serializer.save()
+#            return Response(serializer.data)
+#        else:
+#            return Response(serializer.errors)
 
 
-@api_view(['GET', 'DELETE', 'PUT'])
-def seller_single_view(request, pk):
+# @api_view(['GET', 'DELETE', 'PUT'])
+# def seller_single_view(request, pk):
 
-    if request.method == 'GET':
-        seller = Seller.objects.get(pk=pk)
-        serializer = SellerSerializer(seller, context={'request': request})
-        return Response(serializer.data)   
+#     if request.method == 'GET':
+#         seller = Seller.objects.get(pk=pk)
+#         serializer = SellerSerializer(seller, context={'request': request})
+#         return Response(serializer.data)   
 
-    if request.method == 'PUT':
-        seller = Seller.objects.get(pk=pk)
-        serializer = SellerSerializer(seller, data=request.data, partial=True)
-        if serializer.is_valid():
-           serializer.save()
-           return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+#     if request.method == 'PUT':
+#         seller = Seller.objects.get(pk=pk)
+#         serializer = SellerSerializer(seller, data=request.data, partial=True)
+#         if serializer.is_valid():
+#            serializer.save()
+#            return Response(serializer.data)
+#         else:
+#             return Response(serializer.errors)
     
-    if request.method == 'DELETE':
-        seller = Seller.objects.get(pk=pk)
-        serializer = SellerSerializer(seller)
-        seller.delete()
-        return Response(serializer.data)   
+#     if request.method == 'DELETE':
+#         seller = Seller.objects.get(pk=pk)
+#         serializer = SellerSerializer(seller)
+#         seller.delete()
+#         return Response(serializer.data)   
     
 
 
