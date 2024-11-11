@@ -3,6 +3,9 @@ from market_app.models import Market, Seller, Product
 
 
 class MarketSerializer(serializers.ModelSerializer):
+
+    sellers = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='seller_single')
+
     class Meta:
         model = Market
         fields = '__all__'
@@ -46,12 +49,49 @@ class SellerSerializer(serializers.ModelSerializer):
 #     contact_info = serializers.CharField()
 #     markets = MarketSerializer(many=True, read_only=True)
 
-class SellerDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Seller
-        fields = '__all__'
+# class SellerDetailSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Seller
+#         fields = '__all__'
  
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+# das ist die variante vom serializer ohne "model" diese vriante 
+# wird wenig genutzt, aber dennoch kann es vorkommen. 
+
+# class ProductDetailSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     name = serializers.CharField(max_length=255)
+#     description = serializers.CharField()
+#     market = serializers.IntegerField(write_only=True)
+#     seller = serializers.IntegerField(write_only=True)  # Neues Feld für Seller ID
+#     price = serializers.DecimalField(max_digits=50, decimal_places=2)
+
+#     def validate_market(self, value):
+#         if not Market.objects.filter(id=value).exists():
+#             raise serializers.ValidationError("Invalid market id")
+#         return value
+    
+#     def validate_seller(self, value):
+#         if not Seller.objects.filter(id=value).exists():
+#             raise serializers.ValidationError("Invalid seller id")
+#         return value
+    
+#     def create(self, validated_data):
+#         market_id = validated_data.pop('market')
+#         seller_id = validated_data.pop('seller')
+#         product = Product.objects.create(market_id=market_id, seller_id=seller_id, **validated_data)
+#         return product
+    
+#     def update(self,instance, validated_data):
+#         instance.name = validated_data.get('name', instance.name)
+#         instance.description = validated_data.get('description', instance.description)
+#         instance.price = validated_data.get('price', instance.price)
+#         instance.market = validated_data.get('market', instance.market)
+#         instance.seller = validated_data.get('seller', instance.seller)
+#         instance.save()
+#         return instance

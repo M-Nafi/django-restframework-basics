@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import MarketSerializer, ProductDetailSerializer, SellerSerializer, SellerDetailSerializer
+from .serializers import MarketSerializer, ProductDetailSerializer, SellerSerializer
 from market_app.models import Market, Seller, Product
 
 @api_view(['GET', 'POST'])
@@ -9,7 +9,7 @@ def markets_view(request):
 
     if request.method == 'GET':
         markets = Market.objects.all()
-        serializer = MarketSerializer(markets, many=True)
+        serializer = MarketSerializer(markets, many=True, context={'request': request})
         return Response(serializer.data)    
     
     if request.method == 'POST':
@@ -53,7 +53,7 @@ def sellers_view(request):
 
     if request.method == 'GET':
         sellers = Seller.objects.all()
-        serializer = SellerSerializer(sellers, many=True)
+        serializer = SellerSerializer(sellers, many=True, context={'request': request})
         return Response(serializer.data)    
     
     if request.method == 'POST':
@@ -70,12 +70,12 @@ def seller_single_view(request, pk):
 
     if request.method == 'GET':
         seller = Seller.objects.get(pk=pk)
-        serializer = SellerDetailSerializer(seller)
+        serializer = SellerSerializer(seller, context={'request': request})
         return Response(serializer.data)   
 
     if request.method == 'PUT':
         seller = Seller.objects.get(pk=pk)
-        serializer = SellerDetailSerializer(seller, data=request.data, partial=True)
+        serializer = SellerSerializer(seller, data=request.data, partial=True)
         if serializer.is_valid():
            serializer.save()
            return Response(serializer.data)
@@ -84,13 +84,10 @@ def seller_single_view(request, pk):
     
     if request.method == 'DELETE':
         seller = Seller.objects.get(pk=pk)
-        serializer = SellerDetailSerializer(seller)
+        serializer = SellerSerializer(seller)
         seller.delete()
         return Response(serializer.data)   
     
-
-
-
 
 
 @api_view(['GET', 'POST'])
