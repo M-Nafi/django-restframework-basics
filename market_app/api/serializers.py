@@ -9,7 +9,7 @@ class MarketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Market
         fields = '__all__'
-        # exclude = [] macht das selbe wie '__all__'! 
+        # exclude = [] macht das selbe wie '__all__'!
 
     def validate_name(self, value):
         errors = []
@@ -22,12 +22,26 @@ class MarketSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return value
-    
+
+
 class MarketHyperlinkedSerializer(MarketSerializer, serializers.HyperlinkedModelSerializer):
-    sellers = None  # hiermit kann das in der gesamtansicht nicht anzeigen !
+
+
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+    # sellers = None  # hiermit kann das in der gesamtansicht nicht anzeigen !
     class Meta:
         model = Market
-        exclude = ['net_worth']  # hiermit kann das in der gesamtansicht nicht anzeigen !
+        fields = ['id', 'url', 'name', 'location', 'description', 'net_worth']
+        # exclude = ['net_worth']  # hiermit kann das in der gesamtansicht nicht anzeigen !
 
 
 class SellerSerializer(serializers.ModelSerializer):
